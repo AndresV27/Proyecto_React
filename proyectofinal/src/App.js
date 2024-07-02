@@ -1,7 +1,7 @@
-import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 import Navegador from './misc/nav';
+import Cliente from './clientes/ListaClientes';
 
 function ProyectoFinal() {
   return (
@@ -13,8 +13,9 @@ function ProyectoFinal() {
             <Navegador/>
         </div>
 
-        <div className='container'>
+        <div className='container-fluid'>
             {/* Contenido del inicio */}
+            <Cliente/>
 
         </div>
     </div>
