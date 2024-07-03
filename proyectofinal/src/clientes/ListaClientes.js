@@ -3,6 +3,8 @@ import {
         Button, Modal, ModalHeader, ModalBody, 
         ModalFooter, Form, FormGroup, Label, Input 
     } from 'reactstrap';
+ import axios from 'axios';
+
 
 import ClientesModal from './clientesModal';
 
@@ -27,8 +29,7 @@ import ClientesModal from './clientesModal';
             fetch('https://paginas-web-cr.com/ucr/multimedios0224/ApiMAV/Clientes')
                 .then(respuesta => respuesta.json())
                 .then((datosrepuesta) => {
-                  
-                    setClientes(datosrepuesta.data);
+                   setClientes(datosrepuesta.data);
 
                       
                         
