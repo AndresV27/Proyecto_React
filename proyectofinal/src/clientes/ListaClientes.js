@@ -24,19 +24,19 @@ import ClientesModal from './clientesModal';
     
         //Declarar funciones.
         const fetchClientes = () => {
-            fetch('https://paginas-web-cr.com/ucr/multimedios0224/ApiMAV/Clientes/')
+            fetch('https://paginas-web-cr.com/ucr/multimedios0224/ApiMAV/Clientes')
                 .then(respuesta => respuesta.json())
                 .then((datosrepuesta) => {
-                    if (Array.isArray(datosrepuesta.data)) {
-                        setClientes(datosrepuesta.data);
-                    } else {
-                        setClientes([]);
-                        console.error('Formato de datos inesperado:', datosrepuesta);
-                    }
+                  
+                    setClientes(datosrepuesta.data);
+
+                      
+                        
+                    
                 })
                 .catch(error => {
                     console.error('Error al cargar:', error);
-                    setClientes([]);
+                  
                 });
         };
     

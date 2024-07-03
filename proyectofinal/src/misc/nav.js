@@ -10,8 +10,8 @@ class Nav extends React.Component {
                             <img src={LogoHotel} width="30" height="30" class=""/>
                         </a> */}
                         <ul className='navbar-nav ml-auto'>
-                            <li class="nav-item">
-                                <a class="nav-link" href='../App.js'>Inicio</a>
+                            <li className="nav-item">
+                                <a className="nav-link" href='../App.js'>Inicio</a>
                             </li> 
                             <li className='nav-item'>
                                 <a className='nav-link' href='../clientes/index.js'>
