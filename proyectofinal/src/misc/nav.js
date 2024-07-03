@@ -1,6 +1,5 @@
 import React from 'react';
-import '../App.css'; // Ajusta la ruta según la estructura de tu proyecto
-import LogoHotel from '../images/HotelIcon2.png';
+// import LogoHotel from '../images/HotelIcon2.png';
 
 class Nav extends React.Component {
     render() { 
@@ -11,16 +10,15 @@ class Nav extends React.Component {
                             <img src={LogoHotel} width="30" height="30" class=""/>
                         </a> */}
                         <ul className='navbar-nav ml-auto'>
+                            <li class="nav-item">
+                                <a class="nav-link" href='../App.js'>Inicio</a>
+                            </li> 
                             <li className='nav-item'>
-                                <button className='nav-link btn btn-link'>
-                                    Inicio
-                                </button>
-                            </li>
-                            <li className='nav-item'>
-                                <button className='nav-link btn btn-link'>
+                                <a className='nav-link' href='../clientes/index.js'>
                                     Clientes
-                                </button>
+                                </a>
                             </li>
+                            
                         </ul>
                     </nav>
                 </div>
