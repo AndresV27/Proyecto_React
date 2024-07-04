@@ -1,19 +1,17 @@
- import React, { useEffect, useState } from 'react';
- import {
-     Button, Modal, ModalHeader, ModalBody,
-    ModalFooter, Form, FormGroup, Label, Input
- } from 'reactstrap';
- import axios from 'axios';
- import ClientesModal from './clientesModal';
+import React, { useEffect, useState } from 'react';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Label, Input } from 'reactstrap';
+import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
+import ClientesModal from './clientesModal';
 
- const ListaClientes = () => {
+const ListaClientes = () => {
 
     //declaracion de variables, arreglos
-   const [clientes, setClientes] = useState([]);
-   const [modalOpen, setModalOpen] = useState(false);
-   const [clientesEditar, setClientesEditar] = useState(null);
-   const [isEditar, setIsEditar] = useState(false);
+    const [clientes, setClientes] = useState([]);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [clienteEditar, setClienteEditar] = useState(null);
+    const [isEditar, setIsEditar] = useState(false);
 
     //Ejecuta funciones, renderiza la pantalla, ejecuta scripts
     useEffect(() => {
@@ -22,24 +20,25 @@
 
 
 
-    //Declarar funciones.
-    const fetchClientes = () => {
-        fetch('https://paginas-web-cr.com/ucr/multimedios0224/EquipoMAV/Clientes')
-            .then(respuesta => respuesta.json())
-            .then((datosrepuesta) => {
-                setClientes(datosrepuesta.data);
-                console.log(datosrepuesta);
-                
-            })
-            .catch(error => {
-                console.error('Error al cargar:', error);
-
-            });
-    };
+  //Declarar funciones.
+  const fetchClientes = () =>{
+    //url + listar esto es la url del servicio concatenada
+    fetch( 'https://paginas-web-cr.com/ucr/multimedios0224/EquipoMAV/Clientes/' )
+    .then(respuesta=>respuesta.json())
+    .then( (datosrepuesta) => {
+        console.log(datosrepuesta);
+        setClientes(datosrepuesta);
+    })
+    .catch(
+        error=>{
+            console.error('Error al cargar:' , error);
+        }
+       );
+    };
 
 
     const toggleEditModal = (cliente) => {
-        setClientesEditar(cliente);
+        setClienteEditar(cliente);
 
         if (cliente) {
             setIsEditar(true);
@@ -52,11 +51,20 @@
 
 
 
-    const guardar = async () => {
-        // similar al fect
-    }
+    const guardar = async (cliente) => {
+        try {
+            if (isEditar) {
+                await axios.put(`https://paginas-web-cr.com/ucr/multimedios0224/EquipoMAV/Clientes/${cliente.idCliente}`, cliente);
+            } else {
+                await axios.post('https://paginas-web-cr.com/ucr/multimedios0224/EquipoMAV/Clientes', cliente);
+            }
+            fetchClientes();
+            toggleModal();
+        } catch (error) {
+            console.error('Error al guardar:', error);
+        }
+    };
 
-    //Permite abri modal desde otro componente.
     const toggleModal = () => {
 
         setModalOpen(!modalOpen);
@@ -69,100 +77,102 @@
 
             <br></br><br></br><br></br>
 
-            <div className='container'>
-                <Button color='btn btn-warning' onClick={() => toggleEditModal(null)}>
-                    Insertar cliente
-                </Button>
-            </div>
+
+            <Button color='primary' onClick={() => toggleEditModal(null)}>
+                Agregar cliente
+            </Button>
+
+            <table
+                className="table table-danger table-hover"
+            >
+
+                <thead>
+                    <tr>
+                       
+                        <th scope="col">Id</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Apellido</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Telefono</th>
+                        <th scope="col">Direccion</th>
+                        <th scope="col">Pais</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Acciones</th>
+
+                    </tr>
+                </thead>
+                <tbody id="datos">
+                    {
+                        clientes.map(cliente => (
+                            <tr key={cliente.idCliente}>
+                               
+                                <td>{cliente.idCliente}</td>
+                                <td>{cliente.nombre}</td>
+                                <td>{cliente.apellido}</td>
+                                <td>{cliente.email}</td>
+                                <td>{cliente.telefono}</td>
+                                <td>{cliente.direccion}</td>
+                                <td>{cliente.pais}</td>
+                                <td>{cliente.estado}</td>
+                               
+                                <td>
+                                    <Button color='primary' onClick={() => toggleEditModal(cliente)}>Editar</Button>
+
+                                </td>
+                            </tr>
+                        ))
+                    }
 
 
-            <div className='container-fluid'>
-                <table className="table table-danger table-hover align-middle">
+                </tbody>
+            </table>
 
-                    <thead>
-                        <tr >
-                            <th scope="col">Acciones</th>
-                            <th scope="col">ID_Cliente</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Apellido</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Teléfono</th>
-                            <th scope="col">Dirección</th>
-                            <th scope="col">País</th>
-                            <th scope="col">Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody id="datos" className="table-group-divider">
-                        {
-                            clientes.map(cliente => (
-                                <tr key={cliente.idCliente}>
-                                    <td>Botones</td>
-                                    <td>{cliente.idCliente}</td>
-                                    <td>{cliente.nombre}</td>
-                                    <td>{cliente.apellido}</td>
-                                    <td>{cliente.email}</td>
-                                    <td>{cliente.telefono}</td>
-                                    <td>{cliente.direccion}</td>
-                                    <td>{cliente.pais}</td>
-                                    <td>{cliente.estado}</td>
-                                    <td>
-                                        <Button color='primary' onClick={() => toggleEditModal(cliente)}>Editar</Button>
-                                    </td>
-                                </tr>
-                            ))
-                        }
+            {<Modal isOpen={modalOpen} >
+                            <ModalHeader >Modal Curso</ModalHeader>
+                            <ModalBody>
+                                <Label>Nombre</Label>
+                                <Input type="text" id="nombre" value={clienteEditar?.nombre || ''}></Input>
+                                <Label>Apellido</Label>
+                                <Input type="text" id="apellido" value={clienteEditar?.apellido || ''}></Input>
+                                <Label>Email</Label>
+                                <Input type="text" id="email" value={clienteEditar?.email || ''}></Input>
+                                <Label>Telefono</Label>
+                                <Input type="text" id="telefono" value={clienteEditar?.telefono || ''}></Input> 
+                                <Label>Direccion</Label>
+                                <Input type="text" id="direccion" value={clienteEditar?.direccion || ''}></Input> 
+                                <Label>Pais</Label>
+                                <Input type="text" id="pais" value={clienteEditar?.pais || ''}></Input> 
+                                <Label>Estado</Label>
+                                <Input type="text" id="estado" value={clienteEditar?.estado || ''}></Input>                                                                                                                                                             
+                            </ModalBody>
+                            <ModalFooter>
+                            <Button color='success' onClick={guardar}>
+                                Guardar
+                            </Button>
+                            <Button color='danger' onClick={() => toggleEditModal(false)}>
+                                Cerrar
+                            </Button>
 
 
-                    </tbody>
-                </table>
-            </div>
-
-
-            {/* <Modal isOpen={modalOpen} >
-                <ModalHeader >Modal Curso</ModalHeader>
-                <ModalBody>
-                    <Label>Nombre</Label>
-                    <Input type="text" id="nombre" value={clientesEditar?.nombre || ''}></Input>
-                    <Label>Descripcion</Label>
-                    <Input type="text" id="descripcion" value={clientesEditar?.descripcion || ''}></Input>
-                    <Label>Tiempo</Label>
-                    <Input type="text" id="tiempo" value={clientesEditar?.tiempo || ''}></Input>
-                    <Label>Usuario</Label>
-                    <Input type="text" id="usuario" value={clientesEditar?.usuario || ''}></Input>
-                </ModalBody>
-                <ModalFooter>
-                    <Button color='success' onClick={guardar}>
-                        Guardar
-                    </Button>
-                    <Button color='danger' onClick={() => toggleEditModal(false)}>
-                        Cerrar
-                    </Button>
-
-
-                </ModalFooter>
-            </Modal> */}
+                            </ModalFooter>
+                        </Modal> }
 
 
 
-            {/* Este modal es para editar */}
             <ClientesModal
                 isOpen={modalOpen}
                 toggleModal={toggleModal}
-                onClientesInsert={fetchClientes}
+                onClientesInsert={guardar}
                 isEditar={isEditar}
-                clientesEditar={clientesEditar}
+                clienteEditar={clienteEditar}
             >
             </ClientesModal>
-
 
         </div>
 
 
 
     );
+}
 
- }
 export default ListaClientes;
-
-
-

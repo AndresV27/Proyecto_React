@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from 'react';
-
-import {
-    Button, Modal, ModalHeader, ModalBody, 
-    ModalFooter, Form, FormGroup, Label, Input 
-} from 'reactstrap';
-
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Label, Input } from 'reactstrap';
 import axios from 'axios';
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const ClientesModal = ( {isOpen, toggleModal, onClientesInsert, isEditar, clientesEditar}) => {
     const [ nombre, setNombre] = useState('');
@@ -61,7 +56,7 @@ const ClientesModal = ( {isOpen, toggleModal, onClientesInsert, isEditar, client
                     estado
                 }
             );
-            console.log('Respuesta', response.data);
+            console.log('Respuesta', response);
             onClientesInsert();
             cleanData();
             toggleModal();
