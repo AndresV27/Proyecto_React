@@ -29,6 +29,7 @@
             .then((datosrepuesta) => {
                 setClientes(datosrepuesta.data);
                 console.log(datosrepuesta);
+                
             })
             .catch(error => {
                 console.error('Error al cargar:', error);
