@@ -50,7 +50,7 @@ const ClientesModal = ( {isOpen, toggleModal, onClientesInsert, isEditar, client
     const handleSubmit = async () => {   
 
         try {
-            const response = await axios.post('https://paginas-web-cr.com/Api/apis/insertarCliente.php', 
+            const response = await axios.post('https://paginas-web-cr.com/ucr/multimedios0224/ApiMAV/Clientes', 
                 {
                     nombre,
                     apellido,
