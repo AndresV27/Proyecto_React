@@ -12,6 +12,9 @@ const ListaClientes = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [clienteEditar, setClienteEditar] = useState(null);
     const [isEditar, setIsEditar] = useState(false);
+    const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
+    const [clienteDelete, setClienteDelete] = useState(null);
+
 
     //Ejecuta funciones, renderiza la pantalla, ejecuta scripts
     useEffect(() => {
@@ -20,24 +23,25 @@ const ListaClientes = () => {
 
 
 
-  //Declarar funciones.
-  const fetchClientes = () =>{
-    //url + listar esto es la url del servicio concatenada
-    fetch( 'https://paginas-web-cr.com/ucr/multimedios0224/EquipoMAV/Clientes/' )
-    .then(respuesta=>respuesta.json())
-    .then( (datosrepuesta) => {
-        console.log(datosrepuesta);
-        setClientes(datosrepuesta);
-    })
-    .catch(
-        error=>{
-            console.error('Error al cargar:' , error);
-        }
-       );
-    };
+    //Declarar funciones.
+    const fetchClientes = () => {
+        //url + listar esto es la url del servicio concatenada
+        fetch('https://paginas-web-cr.com/ucr/multimedios0224/EquipoMAV/Clientes/')
+            .then(respuesta => respuesta.json())
+            .then((datosrepuesta) => {
+                console.log(datosrepuesta);
+                setClientes(datosrepuesta);
+            })
+            .catch(
+                error => {
+                    console.error('Error al cargar: ', error);
+                }
+            );
+    };
 
 
     const toggleEditModal = (cliente) => {
+
         setClienteEditar(cliente);
 
         if (cliente) {
@@ -50,46 +54,42 @@ const ListaClientes = () => {
     };
 
 
-
-    const guardar = async (cliente) => {
-        try {
-            if (isEditar) {
-                await axios.put(`https://paginas-web-cr.com/ucr/multimedios0224/EquipoMAV/Clientes/${cliente.idCliente}`, cliente);
-            } else {
-                await axios.post('https://paginas-web-cr.com/ucr/multimedios0224/EquipoMAV/Clientes', cliente);
-            }
-            fetchClientes();
-            toggleModal();
-        } catch (error) {
-            console.error('Error al guardar:', error);
-        }
-    };
-
     const toggleModal = () => {
-
         setModalOpen(!modalOpen);
     }
 
+
+    const handleClienteDelete = async () => {
+        try {
+            const response = await axios.delete('https://paginas-web-cr.com/ucr/multimedios0224/EquipoMAV/Clientes/', {
+                data: { idCliente: clienteDelete.idCliente }
+            });
+            console.log('Respuesta del API: ', response.data);
+            toggleDeleteModal();
+            fetchClientes();
+        } catch (error) {
+            console.error('Error en el AAPI...', error);
+        }
+    }
+
+    const toggleDeleteModal = (cliente) => {
+        setClienteDelete(cliente);
+        setModalDeleteOpen(!modalDeleteOpen);
+    };
 
     return (
 
         <div className='container'>
 
-            <br></br><br></br><br></br>
+        <Button style={ {padding: '5px'}} color='btn btn-primary' onClick={() => toggleEditModal(null)}>Agregar</Button>
 
 
-            <Button color='primary' onClick={() => toggleEditModal(null)}>
-                Agregar cliente
-            </Button>
 
             <table
-                className="table table-danger table-hover"
-            >
-
-                <thead>
+                className="table table-light table-hover">
+                <thead className='table-dark'>
                     <tr>
-                       
-                        <th scope="col">Id</th>
+                        <th scope="col">ID_Cliente</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">Apellido</th>
                         <th scope="col">Email</th>
@@ -101,22 +101,26 @@ const ListaClientes = () => {
 
                     </tr>
                 </thead>
-                <tbody id="datos">
+                <tbody id="datos" className='table-group-divider'>
                     {
-                        clientes.map(cliente => (
-                            <tr key={cliente.idCliente}>
-                               
-                                <td>{cliente.idCliente}</td>
-                                <td>{cliente.nombre}</td>
-                                <td>{cliente.apellido}</td>
-                                <td>{cliente.email}</td>
-                                <td>{cliente.telefono}</td>
-                                <td>{cliente.direccion}</td>
-                                <td>{cliente.pais}</td>
-                                <td>{cliente.estado}</td>
-                               
+                        clientes.map(item => (
+                            <tr key={item.idCliente}>
+                                <td>{item.idCliente}</td>
+                                <td>{item.nombre}</td>
+                                <td>{item.apellido}</td>
+                                <td>{item.email}</td>
+                                <td>{item.telefono}</td>
+                                <td>{item.direccion}</td>
+                                <td>{item.pais}</td>
+                                <td>{item.estado}</td>
+
                                 <td>
-                                    <Button color='primary' onClick={() => toggleEditModal(cliente)}>Editar</Button>
+                                    <div className='btn-group'>
+                                        
+                                        <Button className='btn btn-success' onClick={() => toggleEditModal(item)}>Editar</Button>
+                                        <Button className='btn btn-danger' onClick={() => toggleDeleteModal(item)}>Eliminar</Button>
+                                    </div>
+
 
                                 </td>
                             </tr>
@@ -127,51 +131,31 @@ const ListaClientes = () => {
                 </tbody>
             </table>
 
-            {<Modal isOpen={modalOpen} >
-                            <ModalHeader >Modal Curso</ModalHeader>
-                            <ModalBody>
-                                <Label>Nombre</Label>
-                                <Input type="text" id="nombre" value={clienteEditar?.nombre || ''}></Input>
-                                <Label>Apellido</Label>
-                                <Input type="text" id="apellido" value={clienteEditar?.apellido || ''}></Input>
-                                <Label>Email</Label>
-                                <Input type="text" id="email" value={clienteEditar?.email || ''}></Input>
-                                <Label>Telefono</Label>
-                                <Input type="text" id="telefono" value={clienteEditar?.telefono || ''}></Input> 
-                                <Label>Direccion</Label>
-                                <Input type="text" id="direccion" value={clienteEditar?.direccion || ''}></Input> 
-                                <Label>Pais</Label>
-                                <Input type="text" id="pais" value={clienteEditar?.pais || ''}></Input> 
-                                <Label>Estado</Label>
-                                <Input type="text" id="estado" value={clienteEditar?.estado || ''}></Input>                                                                                                                                                             
-                            </ModalBody>
-                            <ModalFooter>
-                            <Button color='success' onClick={guardar}>
-                                Guardar
-                            </Button>
-                            <Button color='danger' onClick={() => toggleEditModal(false)}>
-                                Cerrar
-                            </Button>
-
-
-                            </ModalFooter>
-                        </Modal> }
-
-
 
             <ClientesModal
                 isOpen={modalOpen}
                 toggleModal={toggleModal}
-                onClientesInsert={guardar}
-                isEditar={isEditar}
+                onClientesInsert={fetchClientes}
                 clienteEditar={clienteEditar}
-            >
+                isEditar={isEditar}>
             </ClientesModal>
 
+
+            <Modal isOpen={modalDeleteOpen} toggle={toggleDeleteModal}>
+
+                <ModalBody>
+                    <p>¿Está seguro de que desea eliminar este cliente?</p>
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="danger" onClick={handleClienteDelete}>Borrar</Button>
+                    <Button color="secondary" onClick={toggleDeleteModal}>Cancelar</Button>
+                </ModalFooter>
+            </Modal>
+
+
+
+
         </div>
-
-
-
     );
 }
 

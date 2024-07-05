@@ -25,11 +25,11 @@ function ProyectoFinal() {
 
       </div>
 
-      <div className='container-fluid'>
+      <div className='container'>
 
         {/* Contenido del inicio */}
-
-          <Cliente/>
+        <Cliente/>
+         
 
       </div>
 
@@ -37,7 +37,7 @@ function ProyectoFinal() {
 
         {/* FOOTER */}
 
-        <Footer/>
+        
 
       </div>
 
